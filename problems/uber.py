@@ -179,6 +179,12 @@ class RideManager:
     def add_rider(self, rider: Rider):
         self.riders.append(rider)
 
+    def set_pricing_strategy(self, strategy: PricingStrategy):
+        self.pricing_strategy = strategy
+
+    def set_matching_strategy(self, strategy: DriverMatchingStrategy):
+        self.matching_strategy = strategy
+
     def request_ride(self, rider: Rider, pickup: Location, dropoff: Location) -> Optional[Ride]:
         print(f"\n--- Processing Ride Request for {rider.name} ---")
         
@@ -197,32 +203,54 @@ class RideManager:
 
 # --- Main Execution Block ---
 
+class UberDemo:
+    @staticmethod
+    def main():
+        # 1. Initialize the System (get singleton instance)
+        uber = RideManager.get_instance()
+
+        # 2. Create Riders and Drivers
+        # Grid locations (0,0) to (100,100)
+        print("\n--- Setting up Drivers and Riders ---")
+        driver1 = Driver("Alice", Location(10, 10))
+        driver2 = Driver("Bob", Location(50, 50)) # Far away
+        rider1 = Rider("John", Location(12, 12))  # Close to Alice
+        rider2 = Rider("Sarah", Location(45, 45))  # Close to Bob
+
+        uber.add_driver(driver1)
+        uber.add_driver(driver2)
+        uber.add_rider(rider1)
+        uber.add_rider(rider2)
+
+        # 3. First ride request
+        # Going from (12,12) to (20,20)
+        print("\n--- Ride Request 1: John's Ride ---")
+        ride1 = uber.request_ride(rider1, rider1.location, Location(20, 20))
+
+        if ride1:
+            # 4. Simulate the ride lifecycle
+            print(f"Ride Status: {ride1.status.value}")
+            
+            # Start the ride
+            ride1.start_ride()
+            
+            # End the ride (simulating it took 15 minutes)
+            ride1.end_ride(duration_min=15)
+            
+            print(f"Final Ride Status: {ride1.status.value}")
+
+        # 5. Second ride request (with surge pricing)
+        print("\n--- Ride Request 2: Sarah's Ride (with Surge Pricing) ---")
+        uber.set_pricing_strategy(SurgePricingStrategy())
+        
+        ride2 = uber.request_ride(rider2, rider2.location, Location(60, 60))
+
+        if ride2:
+            print(f"Ride Status: {ride2.status.value}")
+            ride2.start_ride()
+            ride2.end_ride(duration_min=20)
+            print(f"Final Ride Status: {ride2.status.value}")
+
+
 if __name__ == "__main__":
-    # 1. Initialize the System (get singleton instance)
-    uber = RideManager.get_instance()
-
-    # 2. Create Riders and Drivers
-    # Grid locations (0,0) to (100,100)
-    driver1 = Driver("Alice", Location(10, 10))
-    driver2 = Driver("Bob", Location(50, 50)) # Far away
-    rider1 = Rider("John", Location(12, 12))  # Close to Alice
-
-    uber.add_driver(driver1)
-    uber.add_driver(driver2)
-    uber.add_rider(rider1)
-
-    # 3. Rider requests a ride
-    # Going from (12,12) to (20,20)
-    ride = uber.request_ride(rider1, rider1.location, Location(20, 20))
-
-    if ride:
-        # 4. Simulate the ride lifecycle
-        print(f"Ride Status: {ride.status.value}")
-        
-        # Start the ride
-        ride.start_ride()
-        
-        # End the ride (simulating it took 15 minutes)
-        ride.end_ride(duration_min=15)
-        
-        print(f"Final Ride Status: {ride.status.value}")
+    UberDemo.main()

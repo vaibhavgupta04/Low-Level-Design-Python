@@ -212,7 +212,7 @@ class Booking:
             
 class ConcertTicketBookingSystemDemo:
     @staticmethod
-    def run():
+    def main():
         # Create concert ticket booking system instance
         booking_system = ConcertTicketBookingSystem()
 
@@ -269,4 +269,4 @@ class ConcertTicketBookingSystemDemo:
         return available_seats[:number_of_seats]
 
 if __name__ == "__main__":
-    ConcertTicketBookingSystemDemo.run()
+    ConcertTicketBookingSystemDemo.main()

@@ -35,6 +35,12 @@ class Inventory:
     _instance = None
     _lock = threading.Lock()
     products: Dict[str, int] = {}
+
+    def __init__(self):
+        if Inventory._instance is not None:
+            raise Exception("This class is a singleton!")
+        self.products = {}
+
     @staticmethod
     def get_instance():
         if Inventory._instance is None:

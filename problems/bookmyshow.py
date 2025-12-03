@@ -46,6 +46,8 @@ class WeekendPricingStrategy(PricingStrategy):
         base_price = sum(seat.get_type().get_price() for seat in seats)
         return base_price * self.WEEKEND_SURCHARGE
 
+
+# A Screen can have List of Seat
 class Screen:
     def __init__(self, screen_id: str):
         self.id = screen_id
@@ -60,6 +62,8 @@ class Screen:
     def get_seats(self) -> List[Seat]:
         return self.seats
 
+
+# A Show can have Movie, Screen, PricingStrategy 
 class Show:
     _lock: threading.Lock
     def __init__(self, show_id: str, movie: Movie, screen: Screen, start_time: datetime, pricing_strategy: PricingStrategy):
@@ -84,6 +88,8 @@ class Show:
     def get_pricing_strategy(self) -> PricingStrategy:
         return self.pricing_strategy
     
+
+# Cinema can have List of Screen
 class Cinema:
     def __init__(self, cinema_id: str, name: str, city: City, screens: List[Screen]):
         self.id = cinema_id
